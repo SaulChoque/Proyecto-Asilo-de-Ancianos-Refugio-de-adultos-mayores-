@@ -1,0 +1,244 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+
+namespace Asilo_Ancianos_San_Ramon_
+{
+    class ArchReporteRefugiado
+    {
+        private String nombre;
+        public ArchReporteRefugiado(String nombre)
+        {
+            this.nombre = nombre;
+        }
+        public void crear()
+        {
+            if (System.IO.File.Exists(nombre))
+            {
+                Console.WriteLine("Realmente quiere borrar el archivo?. s/n");
+                if (Console.ReadKey().KeyChar == 's')
+                    System.IO.File.Delete(nombre);
+            }
+            else
+                Console.WriteLine("El archivo no existe. Se crea");
+        }
+        public void generarNuevoReporte(Medico X, Nutricionista Y)
+        {
+            // Abrimos el archivo o se crea un nuevo archivo si no existe
+            Stream arch = File.Open(nombre, FileMode.Append);
+            BinaryWriter escribe = new BinaryWriter(arch);
+            Reporte R = new Reporte();
+            try
+            {
+                do
+                {
+                    Anciano refugiadoSA = new Anciano(); //Creamos un objeto Refugiado
+                    refugiadoSA.leer(); //Leemos datos del refugiado
+                    R.leer();
+                    //Ahora agregamos datos al reporte tanto Refugiado, Medico, Nutricionista
+                    //Cumpliendo con los principios de agregacion y composicion
+                    //escritura física en el archivo
+                    R.agregarRefugiado(refugiadoSA);
+                    R.agregarMedico(X);
+                    R.agregarNutricionista(Y);
+                    R.escribir(escribe);//Escribimos y ya tenemos un reporte creado como archivo
+                    Console.Write("Desea continuar añadiendo refugiados? s/n => ");
+                } while (Console.ReadKey().KeyChar == 's');
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Fallo en adicionar el objeto !!!");
+            }
+            finally
+            {
+                arch.Close();
+            }
+        }
+        public void listarRefugiados()
+        {
+            // Abrimos el archivo o se crea un nuevo archivo si no existe
+            Stream arch = File.Open(nombre, FileMode.OpenOrCreate);
+            BinaryReader lee = new BinaryReader(arch);
+            Reporte R = new Reporte();
+            try
+            {
+                while (true)
+                {
+                    //lectura fisica desde el archivo
+                    R.lectura(lee);
+                    R.mostrar();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("error..."+e);
+            }
+            finally
+            {
+                arch.Close();
+            }
+        }
+        //METODO PARA VERIFICAR MEDIANTE CI SI UN REFUGIADO ESTA REGISTRADO EN EL ALBERGUE
+        public bool verificarRefugiado(int identificacion){
+            // Abrimos el archivo o se crea un nuevo archivo si no existe
+            Stream arch = File.Open(nombre, FileMode.OpenOrCreate);
+            BinaryReader lee = new BinaryReader(arch);
+            Reporte R = new Reporte();
+            try
+            {
+                while (true)
+                {
+                    //lectura fisica desde el archivo
+                    R.lectura(lee);
+                    if (R.verificarCi(identificacion)){
+                        return true; //si encuentra a un refugiado con ci registrada en el albergue
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            finally
+            {
+                arch.Close();
+            }
+        }
+
+        //----------------------------------------------------------------------------
+        //************************HISTORIA CLINICA!*************************
+        //Mostrar si el refugiado con ci C en edad escolar X presenta alguna alteracion Y en la vista
+        public void alteracionOf(int x){
+            // Abrimos el archivo o se crea un nuevo archivo si no existe
+            Stream arch = File.Open(nombre, FileMode.OpenOrCreate);
+            BinaryReader lee = new BinaryReader(arch);
+            Reporte a = new Reporte();
+            try
+            {
+                while (true)
+                {
+                    //lectura fisica desde el archivo
+                    a.lectura(lee);
+                    if(a.Refugiado.getCi()==x)
+                        a.alteracionOf();
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Fin de archivo ...");
+            }
+            finally
+            {
+                arch.Close();
+            }
+        }
+        //Verificar si el refugiado con ci C esta por x problema en el refugio
+        public void problema(int x)
+        {
+            // Abrimos el archivo o se crea un nuevo archivo si no existe
+            Stream arch = File.Open(nombre, FileMode.OpenOrCreate);
+            BinaryReader lee = new BinaryReader(arch);
+            Reporte a = new Reporte();
+            try
+            {
+                while (true)
+                {
+                    //lectura fisica desde el archivo
+                    a.lectura(lee);
+                    if(a.Refugiado.getCi()==x)
+                        a.problema();
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Fin de archivo ...");
+            }
+            finally
+            {
+                arch.Close();
+            }
+        }
+        //mostrar si el refugiado con ci C presenta alguna enfermedad X
+        public void enfermedad(int x)
+        {
+            // Abrimos el archivo o se crea un nuevo archivo si no existe
+            Stream arch = File.Open(nombre, FileMode.OpenOrCreate);
+            BinaryReader lee = new BinaryReader(arch);
+            Reporte a = new Reporte();
+            try
+            {
+                while (true)
+                {
+                    //lectura fisica desde el archivo
+                    a.lectura(lee);
+                    if (a.Refugiado.getCi() == x)
+                        a.enfermedad();
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Fin de archivo ...");
+            }
+            finally
+            {
+                arch.Close();
+            }
+        }
+        //mostrar a los refugiados que presentan iras o edas //nuemonia "iras", gastrointestinales "edas"
+        public void infecciones()
+        {
+            // Abrimos el archivo o se crea un nuevo archivo si no existe
+            Stream arch = File.Open(nombre, FileMode.OpenOrCreate);
+            BinaryReader lee = new BinaryReader(arch);
+            Reporte a = new Reporte();
+            try
+            {
+                while (true)
+                {
+                    //lectura fisica desde el archivo
+                    a.lectura(lee);
+                    a.infecciones();
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Fin de archivo ...");
+            }
+            finally
+            {
+                arch.Close();
+            }
+        }
+        //Mostrar el número de ingresos que se registraron la fecha ‘X’
+        public void registros(string x)
+        {
+            // Abrimos el archivo o se crea un nuevo archivo si no existe
+            Stream arch = File.Open(nombre, FileMode.OpenOrCreate);
+            BinaryReader lee = new BinaryReader(arch);
+            int cont = 0;
+            Reporte a = new Reporte();
+            try
+            {
+                while (true)
+                {
+                    //lectura fisica desde el archivo
+                    a.lectura(lee);
+                    if (a.registros(x))
+                        cont++;
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("En la fecha " + x + " hubo " + cont + " registros nuevos");
+                Console.WriteLine("Fin de archivo ...");
+            }
+            finally
+            {
+                arch.Close();
+            }
+        }
+    }
+}

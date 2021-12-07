@@ -1,0 +1,120 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+
+namespace Asilo_Ancianos_San_Ramon_
+{
+    class ArchMenuSemanal
+    {
+        private String nombre;
+        public ArchMenuSemanal(String nombre)
+        {
+            this.nombre = nombre;
+        }
+        public void crear()
+        {
+            if (System.IO.File.Exists(nombre))
+            {
+                Console.WriteLine("Realmente quiere borrar el archivo?. s/n");
+                if (Console.ReadKey().KeyChar == 's')
+                    System.IO.File.Delete(nombre);
+            }
+            else
+                Console.WriteLine("El archivo no existe. Se crea");
+        }
+        public void añadirMenuSemanal()
+        {
+            // Abrimos el archivo o se crea un nuevo archivo si no existe
+            Stream arch = File.Open(nombre, FileMode.Append);
+            BinaryWriter escribe = new BinaryWriter(arch);
+            Nutricionista nutri = new Nutricionista();
+            try
+            {
+                nutri.leerMenuSemanal();
+                nutri.escribirNutricionista(escribe);//Escribimos y ya tenemos un reporte creado como archivo
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Fallo en adicionar el objeto !!!");
+            }
+            finally
+            {
+                Console.WriteLine("Menu registrado correctamente!");
+                arch.Close();
+            }
+        }
+        public void listarMenuSemanal()
+        {
+            Stream arch = File.Open(nombre, FileMode.OpenOrCreate);
+            BinaryReader lee = new BinaryReader(arch);
+            Nutricionista nutri = new Nutricionista();
+            try
+            {
+                while (true)
+                {
+                    //lectura fisica desde el archivo
+                    nutri.lectorNutricionista(lee);
+                    nutri.mostrarMenuSemanal();
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Fin de archivo ...");
+            }
+            finally
+            {
+                arch.Close();
+            }
+        }
+        public bool verificarFecha(String fecha)
+        {
+            Stream arch = File.Open(nombre, FileMode.OpenOrCreate);
+            BinaryReader lee = new BinaryReader(arch);
+            Nutricionista nutri = new Nutricionista();
+            try
+            {
+                while (true)
+                {
+                    nutri.lectorNutricionista(lee);
+                    if (nutri.verificarFecha(fecha)) 
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            finally
+            {
+                arch.Close();
+            }
+        }
+        public void encontrarMenu(String fecha, String dia) 
+        {
+            Stream arch = File.Open(nombre, FileMode.OpenOrCreate);
+            BinaryReader lee = new BinaryReader(arch);
+            Nutricionista nutri = new Nutricionista();
+            try
+            {
+                while (true)
+                {
+                    nutri.lectorNutricionista(lee);
+                    nutri.mostrarMenuFechaDia(fecha, dia);
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Fin de archivo ...");
+            }
+            finally
+            {
+                arch.Close();
+            }
+        }
+    }
+}

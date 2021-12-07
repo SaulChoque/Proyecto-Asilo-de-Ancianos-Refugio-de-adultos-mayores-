@@ -1,0 +1,85 @@
+﻿/*
+ * Created by SharpDevelop.
+ * User: Riveros Colque Vladimir
+ * Date: 4/12/2021
+ * Time: 15:53
+ */
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.IO;
+namespace Asilo_Ancianos_San_Ramon_
+{
+	public class ArchTaller
+	{
+		private string nombre;
+		
+		public ArchTaller(string n)
+		{
+			nombre=n;
+		}
+		public void crear(){
+			if(System.IO.File.Exists(nombre)){
+				Console.WriteLine("Realmente quiere borrar el archivo. s/n");
+				if(Console.ReadKey().KeyChar == 's'){
+					System.IO.File.Delete(nombre);
+				}
+			}else{
+				Console.WriteLine("El archivo no existe.");
+			}
+		}
+		public void adicionar(){
+			Stream arch = File.Open(nombre,FileMode.Append);
+			BinaryWriter escribe = new BinaryWriter(arch);
+			Taller t=new Taller();
+			try{
+				do{
+					t.leer();
+					t.escribir(escribe);
+					Console.Write("Desea continuar añadiendo Alimentos? s/n => ");
+				}while(Console.ReadKey().KeyChar == 's');
+			}
+			catch(Exception){
+				Console.WriteLine("Fallo en adicionar el objeto !!!");
+			}
+			finally{
+				arch.Close();
+			}
+		}
+		public void listar(){
+			Stream arch = File.Open(nombre,FileMode.OpenOrCreate);
+			BinaryReader lee = new BinaryReader(arch);
+			Taller t = new Taller();
+			try{
+				while(true){
+					t.lectura(lee);
+					t.mostrar();
+				}
+			}
+			catch(Exception e){
+				Console.WriteLine("Fin de archivo ..."+e);
+			}
+			finally{
+				arch.Close();
+			}
+		}
+		//CAMBIAR NOMBRE TALLER
+		public void cambiaNombreTaller(){
+			Stream arch = File.Open(nombre,FileMode.OpenOrCreate);
+			BinaryReader lee = new BinaryReader(arch);
+			Taller t = new Taller();
+			try{
+				while(true){
+					t.lectura(lee);
+					//t.mostrar();
+				}
+			}
+			catch(Exception){
+				Console.WriteLine("Fin de archivo ...");
+			}
+			finally{
+				arch.Close();
+			}
+		}
+	}
+}
